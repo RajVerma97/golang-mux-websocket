@@ -11,7 +11,7 @@ func main() {
 	setupAPI()
 
 	log.Println("Listening on Port 8080")
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServeTLS(":8080", "server.crt", "server.key", nil)
 
 }
 
