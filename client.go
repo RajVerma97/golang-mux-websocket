@@ -43,6 +43,8 @@ func (c *Client) ReadMessages() {
 		return
 	}
 
+	c.connection.SetReadLimit(512)
+
 	c.connection.SetPongHandler(c.pongHandler)
 	for {
 		_, payload, err := c.connection.ReadMessage()
