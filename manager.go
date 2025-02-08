@@ -36,7 +36,8 @@ func (m *Manager) serveWS(w http.ResponseWriter, r *http.Request) {
 
 	client := NewClient(conn, m)
 	m.addClient(client)
-	go client.readMessages()
+	go client.ReadMessages()
+	go client.WriteMessages()
 	log.Println("WebSocket connection established")
 }
 
