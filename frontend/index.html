@@ -60,20 +60,44 @@
   </body>
 
   <script>
+    class Event {
+      constructor(type, payload) {
+        this.type = type;
+        this.payload = payload;
+      }
+    }
+
+    function routeEvent(event) {
+      switch (event.type) {
+        case "new_message":
+          console.log("new message");
+          break;
+        default:
+          alert("unsupported message type");
+          break;
+      }
+    }
+
+    function sendEvent(eventName, payload) {
+      const event = new Event(eventName, payload);
+      conn.send(JSON.stringify(event));
+    }
     function sendMessage() {
       var newMessage = document.getElementById("message");
       if (newMessage != null) {
-        conn.send(newMessage.value);
+        sendEvent("send_message", newMessage.value);
       }
       return false;
     }
     window.onload = () => {
       document.getElementById("chatroom-message").onsubmit = sendMessage;
       if (window["WebSocket"]) {
-        console.log("supports websockets");
         conn = new WebSocket(`ws://${document.location.host}/ws`);
         conn.onmessage = function (event) {
           console.log(event);
+          const eventData = JSON.parse(event.data);
+          const customEvent = Object.assign(new Event(), eventData);
+          routeEvent(customEvent);
         };
       } else {
         alert("Browser does not support websockets");
